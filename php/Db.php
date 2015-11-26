@@ -1,6 +1,7 @@
 <?php
 
 require_once("sms.php");
+const INIPATH = "refonlinesmsconfig.ini";
 
 class Db {
 	// The database connection
@@ -17,7 +18,7 @@ class Db {
 		if(!isset(self::$connection)) {
 			// Load configuration as an array. Use the actual location of your configuration file
 			// Put the configuration file outside of the document root
-			$config = parse_ini_file('../refonlinesmsconfig.ini');
+			$config = parse_ini_file(INIPATH);
 			self::$connection = new mysqli($config['host'],$config['username'],$config['password'],$config['dbname']);
 		}
 
@@ -107,12 +108,12 @@ function sendSms($mobile, $location) {
 	  // UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher=''
 		$update = $db->query("UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher='".$voucher[0]["voucher"]."'");
 	  // send SMS
-		$config = parse_ini_file('../refonlinesmsconfig.ini');
+		$config = parse_ini_file(INIPATH);
 	  $sms = new SMS("https://konsoleh.your-server.de/");
 	  $domain = $config["smsdomain"]; // e.g.: «my-domain.de» (without www!)
 	  $password = $config["smspassword"]; // your FTP password (transmission is encrypted)
-	  $land = "+49"; // country code (e.g. "+49" for Germany)
-	  $text = "Your voucher code is:" . $code; // the desired text (up to max. 160 characters)
+	  $country = "+49"; // country code (e.g. "+49" for Germany)
+	  $text = "Your voucher code is:" . $voucher[0]["voucher"]; // the desired text (up to max. 160 characters)
 	  $sms->send($domain,$password,$country,$mobile,$text);
 	  // return true
 	  return true;
