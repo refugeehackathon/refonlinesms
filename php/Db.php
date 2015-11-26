@@ -1,6 +1,6 @@
 <?php
 
-//require_once("sms.php");
+require_once("sms.php");
 
 class Db {
 	// The database connection
@@ -108,12 +108,12 @@ function sendSms($mobile, $location) {
 		$update = $db->query("UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher='".$voucher[0]["voucher"]."'");
 	  // send SMS
 		$config = parse_ini_file('../refonlinesmsconfig.ini');
-	  /* $sms = new SMS("https://konsoleh.your-server.de/");
+	  $sms = new SMS("https://konsoleh.your-server.de/");
 	  $domain = $config["smsdomain"]; // e.g.: «my-domain.de» (without www!)
 	  $password = $config["smspassword"]; // your FTP password (transmission is encrypted)
 	  $land = "+49"; // country code (e.g. "+49" for Germany)
 	  $text = "Your voucher code is:" . $code; // the desired text (up to max. 160 characters)
-	  $sms->send($domain,$password,$country,$mobile,$text); */
+	  $sms->send($domain,$password,$country,$mobile,$text);
 	  // return true
 	  return true;
 	} else {
