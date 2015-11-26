@@ -1,5 +1,7 @@
 <?php
 
+//require_once("sms.php");
+
 class Db {
 	// The database connection
 	protected static $connection;
@@ -15,7 +17,7 @@ class Db {
 		if(!isset(self::$connection)) {
 			// Load configuration as an array. Use the actual location of your configuration file
 			// Put the configuration file outside of the document root
-			$config = parse_ini_file('../../refonlinesmsconfig.ini');
+			$config = parse_ini_file('../refonlinesmsconfig.ini');
 			self::$connection = new mysqli($config['host'],$config['username'],$config['password'],$config['dbname']);
 		}
 
@@ -82,3 +84,41 @@ class Db {
 		return "'" . $connection -> real_escape_string($value) . "'";
 	}
 }
+
+function getLocations() {
+  $db = new Db();
+  return $db->select("SELECT * FROM locations ORDER BY name");
+}
+
+function usedMobile($mobile) {
+  $db = new Db();
+  if ($db->select("SELECT location_id FROM vouchers WHERE mobileno='".$mobile."' AND lastupdate >= UNIX_TIMESTAMP((NOW() - INTERVAL 60 DAY))"))
+    return true;
+  else
+    return false;
+}
+
+function sendSms($mobile, $location) {
+  // get new voucher
+  $db = new Db();
+  // SELECT voucher FROM vouchers WHERE location_id='".$location."' AND mobileno='' LIMIT 1
+	$voucher = $db->select("SELECT voucher FROM vouchers WHERE location_id='".$location."' AND mobileno IS NULL ORDER BY voucher LIMIT 1");
+	if (!empty($voucher)) {
+	  // UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher=''
+		$update = $db->query("UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher='".$voucher[0]["voucher"]."'");
+	  // send SMS
+		$config = parse_ini_file('../refonlinesmsconfig.ini');
+	  /* $sms = new SMS("https://konsoleh.your-server.de/");
+	  $domain = $config["smsdomain"]; // e.g.: «my-domain.de» (without www!)
+	  $password = $config["smspassword"]; // your FTP password (transmission is encrypted)
+	  $land = "+49"; // country code (e.g. "+49" for Germany)
+	  $text = "Your voucher code is:" . $code; // the desired text (up to max. 160 characters)
+	  $sms->send($domain,$password,$country,$mobile,$text); */
+	  // return true
+	  return true;
+	} else {
+		return false;
+	}
+}
+
+?>

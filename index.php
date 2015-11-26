@@ -1,5 +1,5 @@
 <?php
-require_once("php/functions.php");
+require_once("php/Db.php");
 /* preset variables */
 $error = array();
 $success = false;
@@ -39,10 +39,9 @@ if (isset($_POST["submit"])) {
       $error[] = 4;
     }
     else {
-      sendSms($mobile_tech, $location);
+      $success = sendSms($mobile_tech, $location);
       $mobile = "";
       $terms = 0;
-      $success = true;
     }
   }
 }
