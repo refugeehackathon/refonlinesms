@@ -10,11 +10,11 @@ $terms = 0;
 if (isset($_GET["location"])) $location = $_GET["location"];
 /* check for form submission */
 if (isset($_POST["submit"])) {
-  if (isset($_POST["mobile"])) $mobile = $_POST["mobile"];
+  if (isset($_POST["mobile"])) $mobile = strval($_POST["mobile"]);
   if (isset($_POST["location"])) $location = $_POST["location"];
   if (isset($_POST["terms"])) $terms = $_POST["terms"];
   // Validation
-  if (($mobile == "") || (!preg_match("/(^\+49)|(^01[5-7][1-9])/", $mobile))) { // number format
+  if (($mobile == "") || (!preg_match("/(^\+49)|(^01[5-7][0-9])/", $mobile)) || (strlen($mobile)<11)) { // number format
     // "/(^\+49)|(^01[5-7][1-9])/"
     // "(?:\+\d+)?\s*(?:\(\d+\)\s*(?:[/–-]\s*)?)?\d+(?:\s*(?:[\s/–-]\s*)?\d+)*"
     // "/^\+[0-9]{0,3}[1-9] \([0-9]*[1-9]+\) ([0-9]| - )*[1-9]+$/"
@@ -74,6 +74,10 @@ if (isset($_POST["submit"])) {
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <?php if ($success == true) { ?>
+      <meta http-equiv="refresh" content="3; url=http://192.168.99.1:8002/index.php?zone=zone_01&redirurl=http%3A%2F%2Fwww.refugees-online%2F">
+    <?php } ?>
   </head>
 
   <body>
@@ -98,7 +102,7 @@ if (isset($_POST["submit"])) {
 
           <div class="inner cover">
             <?php if ($success == true) { ?>
-              <div class="alert alert-success" role="alert"><b>Success:</b> Your voucher has been successfully sent to your mobile number.</div>
+              <div class="alert alert-success" role="alert"><b>Success:</b> Your voucher has been successfully sent to your mobile number. <a href="http://192.168.99.1:8002/index.php?zone=zone_01&redirurl=http%3A%2F%2Fwww.refugees-online%2F">Click here to login!</a></div>
             <?php } ?>
             <?php if (in_array(1, $error)) { ?>
               <div class="alert alert alert-danger" role="alert"><b>Error:</b> Please accept our Terms of Service!</div>
@@ -128,9 +132,9 @@ if (isset($_POST["submit"])) {
                     <select name="location" class="form-control">
                       <option value="0"<?php if ($location=="0") echo " selected"; ?>>choose...</option>
                       <?php // echo getLocations(); ?>
-                      <option value="0001"<?php if ($location=="0001") echo " selected"; ?>>Erstaufnahme Fürstenfeldbruck [Fursty]</option>
-                      <option value="0002"<?php if ($location=="0002") echo " selected"; ?>>Gemeinschaftsunterkunft Don Bosco, Germering [DonBosco]</option>
-                      <option value="0003"<?php if ($location=="0003") echo " selected"; ?>>Traglufthalle Gilching [Gilching]</option>
+                      <option value="1"<?php if ($location=="1") echo " selected"; ?>>Erstaufnahme Fürstenfeldbruck [Fursty]</option>
+                      <option value="2"<?php if ($location=="2") echo " selected"; ?>>Gemeinschaftsunterkunft Don Bosco, Germering [DonBosco]</option>
+                      <option value="3"<?php if ($location=="3") echo " selected"; ?>>Traglufthalle Gilching [Gilching]</option>
                     </select>
                   </div>
                 </div>
