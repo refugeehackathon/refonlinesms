@@ -137,9 +137,10 @@ if (isset($_POST["submit"])) {
               <div class="alert alert alert-danger" role="alert"><b>Error:</b> Please make sure that you are no robot!</div>
             <?php } ?>
             <form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" class="form-horizontal">
-              <h1 class="cover-heading">SMS Voucher for WLAN</h1>
-              <p class="lead">Type in your mobile number below to receive a WLAN voucher. If not choosen, please pick a location where you want access to the internet.</p>
-              <p class="lead">
+              <h1 class="cover-heading">Get your WiFi voucher by SMS!</h1>
+              <p>You can obtain a free WiFi voucher for 60 days by filling the form below. You need to have a German mobile number, foreign numbers will not be accepted. The provider of the WiFi service may block your account at its sole discretion if your data is suspect to fraud (e.g. providing an incorrect name).</br>
+                You must read and agree to the Terms of Service below. <a href="terms.php" target="_blank">Click here</a> for the Terms of Service in Arabic, French, Urdu, Krio, Tigrinya and many other languages.</p></p>
+              <p>
                 <div class="form-group">
                   <label for="mobile" class="col-sm-3 control-label">Mobile number:</label>
                   <div class="col-sm-9">
@@ -166,7 +167,7 @@ if (isset($_POST["submit"])) {
                   <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox" align="left">
                       <label>
-                        <input type="checkbox" name="terms" value="1"<?php if ($terms==1) echo " checked"; ?>> I agree to the <a href="terms.php">Terms of Service</a>.
+                        <input type="checkbox" name="terms" value="1"<?php if ($terms==1) echo " checked"; ?>> I agree to the <a href="terms.php" target="_blank">Terms of Service</a>.
                       </label>
                     </div>
                   </div>

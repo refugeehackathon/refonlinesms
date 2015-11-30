@@ -48,11 +48,25 @@
             </div>
           </div>
 
-          <div class="inner cover">
-            <h1 class="cover-heading">Terms of Service</h1>
-            <p class="lead">The following documents contains important notes on using the Internet connection.</p>
-            <p class="lead">Download: <a href="files/Refugees-Online_Terms_of_Service.pdf" target="_blank">Refugees-Online_Terms_of_Service.pdf (594 kB)</a></p>
-            <p class="lead">In case of problems or questions send a mail to <a href="mailto:support@refugees-online.de">support@refugees-online.de</a>.</p>
+          <div class="inner">
+            <h1 class="heading">Terms of Service</h1>
+            <p>By receiving the login information (voucher) you can use the Internet. Please note that the internet is brought to you by third parties. The connection owner is an individual or a private association.<br/>
+              You agree to observe the following rules: Do not pass the login information to anybody. The use of the connection is only permitted by you personally!<br/>
+              The usage is subject to the statutory provisions for Internet use in Germany. The operator can save your connection information and make it available to the authorities when a crime is suspected.<br/>
+              In particular, the following are not allowed:<br/>
+              <ul>
+                <li>The call for criminal offenses on the Internet</li>
+                <li>The organization of crime on the Internet</li>
+                <li>The publication of defamatory, abusive or hateful content</li>
+                <li>The distribution of computer viruses or harmful software</li>
+                <li>Unauthorized downloading and / or sharing copyrighted data such as movies, music or video games</li>
+                <li>The use of websites with pornographic content</li>
+                <li>The distribution of pornography</li>
+              </ul>
+              In addition, the statutory provisions for Internet use in Germany apply. By checking the box you agree to the above terms and conditions.<br/>
+              Download: <a href="files/Refugees-Online_Terms_of_Service.pdf" target="_blank">Refugees-Online_Terms_of_Service.pdf (594 kB)</a><br/>
+              In case of problems or questions send a mail to <a href="mailto:support@refugees-online.de">support@refugees-online.de</a>.
+            </p>
           </div>
 
           <div class="mastfoot">
