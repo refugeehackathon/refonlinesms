@@ -6,13 +6,16 @@ $success = false;
 $mobile = "";
 $location = "0";
 $terms = 0;
+$captcha = "";
 /* check for location given in the link from pfSense */
-if (isset($_GET["location"])) $location = $_GET["location"];
+if (isset($_GET["location"]))
+  $location = $_GET["location"];
 /* check for form submission */
 if (isset($_POST["submit"])) {
   if (isset($_POST["mobile"])) $mobile = strval($_POST["mobile"]);
   if (isset($_POST["location"])) $location = $_POST["location"];
   if (isset($_POST["terms"])) $terms = $_POST["terms"];
+  if (isset($_POST["g-recaptcha-response"])) $captcha = $_POST['g-recaptcha-response'];
   // Validation
   if (($mobile == "") || (!preg_match("/(^\+49)|(^01[5-7][0-9])/", $mobile)) || (strlen($mobile)<11)) { // number format
     // "/(^\+49)|(^01[5-7][1-9])/"
@@ -25,6 +28,9 @@ if (isset($_POST["submit"])) {
   }
   if ($terms != 1) { // terms not checked
     $error[] = 1;
+  }
+  if (checkRecaptcha($captcha, $_SERVER['REMOTE_ADDR'])->success != 1) {
+    $error[] = 6;
   }
   if (count($error) == 0) {
     $mobile_tech = "";
@@ -39,9 +45,15 @@ if (isset($_POST["submit"])) {
       $error[] = 4;
     }
     else {
-      $success = sendSms($mobile_tech, $location);
-      $mobile = "";
-      $terms = 0;
+      $success =
+      $sended = sendSms($mobile_tech, $location);
+      if ($sended) {
+        $success = true;
+        $mobile = "";
+        $terms = 0;
+      } else {
+        $error[] = 5;
+      }
     }
   }
 }
@@ -75,8 +87,10 @@ if (isset($_POST["submit"])) {
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+
     <?php if ($success == true) { ?>
-      <meta http-equiv="refresh" content="3; url=http://192.168.99.1:8002/index.php?zone=zone_01&redirurl=http%3A%2F%2Fwww.refugees-online%2F">
+      <meta http-equiv="refresh" content="5; url=http://192.168.99.1:8002/index.php?zone=zone_01&redirurl=http%3A%2F%2Fwww.refugees-online%2F">
     <?php } ?>
   </head>
 
@@ -116,6 +130,12 @@ if (isset($_POST["submit"])) {
             <?php if (in_array(4, $error)) { ?>
               <div class="alert alert alert-danger" role="alert"><b>Error:</b> Your mobile number was already used to receive a voucher in the 60 days.</div>
             <?php } ?>
+            <?php if (in_array(5, $error)) { ?>
+              <div class="alert alert alert-danger" role="alert"><b>Error:</b> There are no more available voucher codes in our database. Please contact <a href="mailto:support@refugees-online.de">support@refugees-online.de</a>.</div>
+            <?php } ?>
+            <?php if (in_array(6, $error)) { ?>
+              <div class="alert alert alert-danger" role="alert"><b>Error:</b> Please make sure that you are no robot!</div>
+            <?php } ?>
             <form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" class="form-horizontal">
               <h1 class="cover-heading">SMS Voucher for WLAN</h1>
               <p class="lead">Type in your mobile number below to receive a WLAN voucher. If not choosen, please pick a location where you want access to the internet.</p>
@@ -126,6 +146,7 @@ if (isset($_POST["submit"])) {
                     <input type="text" class="form-control" placeholder="e.g. 0123-1234567" name="mobile"<?php if ($mobile != "") echo ' value="'.$mobile.'"'; ?>>
                   </div>
                 </div>
+                <?php if ((in_array(2, $error)) || ($location == "0")) { ?>
                 <div class="form-group">
                   <label for="location" class="col-sm-3 control-label">Choose location:</label>
                   <div class="col-sm-9">
@@ -138,6 +159,9 @@ if (isset($_POST["submit"])) {
                     </select>
                   </div>
                 </div>
+                <?php } else { ?>
+                <input type="hidden" name="location" value="<?php echo $location; ?>" />
+                <?php } ?>
                 <div class="form-group">
                   <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox" align="left">
@@ -145,6 +169,11 @@ if (isset($_POST["submit"])) {
                         <input type="checkbox" name="terms" value="1"<?php if ($terms==1) echo " checked"; ?>> I agree to the <a href="terms.php">Terms of Service</a>.
                       </label>
                     </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-9">
+                    <div class="g-recaptcha" data-sitekey="6LfbBxITAAAAAN4eckOP5VU9EvwF7Dr9FRkTeavb"></div>
                   </div>
                 </div>
                 <div class="form-group">

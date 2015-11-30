@@ -122,4 +122,10 @@ function sendSms($mobile, $location) {
 	}
 }
 
+function checkRecaptcha($captcha, $server) {
+	$config = parse_ini_file(INIPATH);
+	$response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=".$config["secret"]."&response=".$captcha."&remoteip=".$server));
+	return $response;
+}
+
 ?>
