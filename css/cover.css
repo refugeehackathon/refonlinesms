@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Globals
  */
 
@@ -6,7 +6,7 @@
 a,
 a:focus,
 a:hover {
-  color: #000;
+  color: #4444; /* <--------------- Linkfarbe */
 }
 
 /* Custom default button */
@@ -27,7 +27,8 @@ a:hover {
 html,
 body {
   height: 100%;
-  background-color: #333;
+  background-color: #fff; /* <--------------- Farbe Hintergrund */
+
 }
 body {
   color: #fff;
@@ -49,13 +50,15 @@ body {
   vertical-align: top;
 }
 .cover-container {
-  margin-right: auto;
-  margin-left: auto;
+	margin-right: auto;
+	margin-left: auto;
+	color: #000000;
 }
 
 /* Padding for spacing */
 .inner {
-  padding: 30px;
+	padding: 30px;
+	color: #000000;
 }
 
 
@@ -74,24 +77,24 @@ body {
   margin-left: 20px;
 }
 .masthead-nav > li > a {
-  padding-right: 0;
-  padding-left: 0;
-  font-size: 16px;
-  font-weight: bold;
-  color: #fff; /* IE8 proofing */
-  color: rgba(255,255,255,.75);
-  border-bottom: 2px solid transparent;
+	padding-right: 0;
+	padding-left: 0;
+	font-size: 16px;
+	font-weight: bold;
+	color: #fff; /* IE8 proofing */;
+	color: rgb(0, 0, 0);
+	border-bottom: 2px solid transparent;
 }
 .masthead-nav > li > a:hover,
 .masthead-nav > li > a:focus {
   background-color: transparent;
   border-bottom-color: #a9a9a9;
-  border-bottom-color: rgba(255,255,255,.25);
+  border-bottom-color: #000;
 }
 .masthead-nav > .active > a,
 .masthead-nav > .active > a:hover,
 .masthead-nav > .active > a:focus {
-  color: #fff;
+  color: #000; /* >-----------------Link Home */
   border-bottom-color: #fff;
 }
 
