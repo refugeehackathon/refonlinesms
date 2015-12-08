@@ -99,14 +99,14 @@ function usedMobile($mobile) {
     return false;
 }
 
-function sendSms($mobile, $location) {
+function sendSms($mobile, $location, $name) {
   // get new voucher
   $db = new Db();
   // SELECT voucher FROM vouchers WHERE location_id='".$location."' AND mobileno='' LIMIT 1
 	$voucher = $db->select("SELECT voucher FROM vouchers WHERE location_id='".$location."' AND mobileno IS NULL ORDER BY voucher LIMIT 1");
 	if (!empty($voucher)) {
 	  // UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher=''
-		$update = $db->query("UPDATE vouchers SET mobileno='".$mobile."', lastupdate = NOW() WHERE voucher='".$voucher[0]["voucher"]."'");
+		$update = $db->query("UPDATE vouchers SET mobileno='".$mobile."', name='".$name."', lastupdate = NOW() WHERE voucher='".$voucher[0]["voucher"]."'");
 	  // send SMS
 		$config = parse_ini_file(INIPATH);
 	  $sms = new SMS("https://konsoleh.your-server.de/");

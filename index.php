@@ -4,6 +4,7 @@ require_once("php/Db.php");
 $error = array();
 $success = false;
 $mobile = "";
+$name = "";
 $location = "0";
 $terms = 0;
 $captcha = "";
@@ -13,6 +14,7 @@ if (isset($_GET["location"]))
 /* check for form submission */
 if (isset($_POST["submit"])) {
   if (isset($_POST["mobile"])) $mobile = strval($_POST["mobile"]);
+  if (isset($_POST["name"])) $name = strval($_POST["name"]);
   if (isset($_POST["location"])) $location = $_POST["location"];
   if (isset($_POST["terms"])) $terms = $_POST["terms"];
   if (isset($_POST["g-recaptcha-response"])) $captcha = $_POST['g-recaptcha-response'];
@@ -32,6 +34,9 @@ if (isset($_POST["submit"])) {
   if (checkRecaptcha($captcha, $_SERVER['REMOTE_ADDR'])->success != 1) {
     $error[] = 6;
   }
+  if (strlen($name) <= 5) {
+    $error[] = 7;
+  }
   if (count($error) == 0) {
     $mobile_tech = "";
     // remove everything except numbers
@@ -46,10 +51,11 @@ if (isset($_POST["submit"])) {
     }
     else {
       $success =
-      $sended = sendSms($mobile_tech, $location);
+      $sended = sendSms($mobile_tech, $location, $name);
       if ($sended) {
         $success = true;
         $mobile = "";
+        $name = "";
         $terms = 0;
       } else {
         $error[] = 5;
@@ -105,12 +111,12 @@ if (isset($_POST["submit"])) {
           <div class="masthead clearfix">
             <div class="inner">
               <h3 class="masthead-brand"><img src="images/logo.png"></h3>
-              <nav>
+              <!--<nav>
                 <ul class="nav masthead-nav">
                   <li class="active"><a href="index.php">Home</a></li>
                   <li><a href="terms.php">Terms of Service</a></li>
                 </ul>
-              </nav>
+              </nav> -->
             </div>
           </div>
 
@@ -136,15 +142,25 @@ if (isset($_POST["submit"])) {
             <?php if (in_array(6, $error)) { ?>
               <div class="alert alert alert-danger" role="alert"><b>Error:</b> Please make sure that you are no robot!</div>
             <?php } ?>
+            <?php if (in_array(7, $error)) { ?>
+              <div class="alert alert alert-danger" role="alert"><b>Error:</b> Please provide your name!</div>
+            <?php } ?>
             <form method="post" action="<?php echo $_SERVER["PHP_SELF"];?>" class="form-horizontal">
               <h1 class="cover-heading">Get your WiFi voucher by SMS!</h1>
               <p>You can obtain a free WiFi voucher for 60 days by filling the form below. You need to have a German mobile number, foreign numbers will not be accepted. The provider of the WiFi service may block your account at its sole discretion if your data is suspect to fraud (e.g. providing an incorrect name).</br>
-                You must read and agree to the Terms of Service below. <a href="terms.php" target="_blank">Click here</a> for the Terms of Service in Arabic, French, Urdu, Krio, Tigrinya and many other languages.</p></p>
+                You must read and agree to the Terms of Service below.<br/>
+                <a href="#Terms_of_Service">Click here</a> for the Terms of Service in Arabic, French, Urdu, Krio, Tigrinya and many other languages.</p>
               <p>
                 <div class="form-group">
                   <label for="mobile" class="col-sm-3 control-label">Mobile number:</label>
                   <div class="col-sm-9">
                     <input type="text" class="form-control" placeholder="e.g. 0123-1234567" name="mobile"<?php if ($mobile != "") echo ' value="'.$mobile.'"'; ?>>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="name" class="col-sm-3 control-label">Your full name:</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" placeholder="Your name" name="name"<?php if ($name != "") echo ' value="'.$name.'"'; ?>>
                   </div>
                 </div>
                 <?php if ((in_array(2, $error)) || ($location == "0")) { ?>
@@ -156,7 +172,7 @@ if (isset($_POST["submit"])) {
                       <?php // echo getLocations(); ?>
                       <option value="1"<?php if ($location=="1") echo " selected"; ?>>Erstaufnahme Fürstenfeldbruck [Fursty]</option>
                       <option value="2"<?php if ($location=="2") echo " selected"; ?>>Gemeinschaftsunterkunft Don Bosco, Germering [DonBosco]</option>
-                      <option value="3"<?php if ($location=="3") echo " selected"; ?>>Traglufthalle Gilching [Gilching]</option>
+                      <option value="3"<?php if ($location=="3") echo " selected"; ?>>Traglufthalle Grünwald [Grünwald]</option>
                     </select>
                   </div>
                 </div>
@@ -167,7 +183,7 @@ if (isset($_POST["submit"])) {
                   <div class="col-sm-offset-3 col-sm-9">
                     <div class="checkbox" align="left">
                       <label>
-                        <input type="checkbox" name="terms" value="1"<?php if ($terms==1) echo " checked"; ?>> I agree to the <a href="terms.php" target="_blank">Terms of Service</a>.
+                        <input type="checkbox" name="terms" value="1"<?php if ($terms==1) echo " checked"; ?>> I agree to the Terms of Service.
                       </label>
                     </div>
                   </div>
@@ -184,7 +200,33 @@ if (isset($_POST["submit"])) {
                 </div>
               </p>
             </form>
-          </div>
+
+
+      <br/>
+
+      <h1 class="heading"><a name="Terms_of_Service">Terms of Service</a></h1>
+      <p>By receiving the login information (voucher) you can use the Internet. Please note that the internet is brought to you by third parties. The connection owner is an individual or a private association.<br/>
+        You agree to observe the following rules: Do not pass the login information to anybody. The use of the connection is only permitted by you personally!<br/>
+        The usage is subject to the statutory provisions for Internet use in Germany. The operator can save your connection information and make it available to the authorities when a crime is suspected.<br/>
+        In particular, the following are not allowed:<br/>
+        <ul>
+          <li>The call for criminal offenses on the Internet</li>
+          <li>The organization of crime on the Internet</li>
+          <li>The publication of defamatory, abusive or hateful content</li>
+          <li>The distribution of computer viruses or harmful software</li>
+          <li>Unauthorized downloading and / or sharing copyrighted data such as movies, music or video games</li>
+          <li>The use of websites with pornographic content</li>
+          <li>The distribution of pornography</li>
+        </ul>
+        In addition, the statutory provisions for Internet use in Germany apply. By checking the box you agree to the above terms and conditions.<br/>
+        Download: <a href="files/Refugees-Online_Terms_of_Service.pdf" target="_blank">Refugees-Online_Terms_of_Service.pdf (594 kB)</a><br/>
+        In case of problems or questions send a mail to <a href="mailto:support@refugees-online.de">support@refugees-online.de</a>.
+      </p>
+
+      </div>
+
+    </div>
+
 
           <div class="mastfoot">
             <div class="inner">
